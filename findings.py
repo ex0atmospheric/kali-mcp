@@ -151,6 +151,16 @@ class FindingsStore:
         if uncracked:
             suggestions.append(f"→ {len(uncracked)} uncracked hash(es) — run crack_hash (john/hashcat)")
 
+        # WordPress detected in notes → suggest wpscan
+        if any("WordPress" in note for note in self._data["notes"]):
+            if not any("wp_scan" in s for s in suggestions):
+                suggestions.append("→ WordPress detected — run wp_scan for detailed vulnerability scan")
+
+        # Exploits found via searchsploit → suggest msf_exec
+        exploit_vulns = [v for v in self._data["vulnerabilities"] if v.get("tool") == "searchsploit"]
+        if exploit_vulns:
+            suggestions.append("→ Exploits found in findings — try msf_exec with a matching module")
+
         login_urls = [
             u for u in self._data["urls"]
             if any(kw in u.get("path", "").lower() for kw in ("login", "admin", "signin"))

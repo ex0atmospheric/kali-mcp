@@ -3,19 +3,10 @@ from context import get_executor, get_findings, ctf_mode_warning
 from scope import ScopeViolation
 from parsers import hydra as hydra_parser
 from parsers import john as john_parser
+from tools._utils import fmt_output
 
 _DEFAULT_PASSLIST = "/usr/share/wordlists/rockyou.txt"
 _DEFAULT_USERLIST = "/usr/share/wordlists/metasploit/unix_users.txt"
-
-
-def _fmt(raw: str, timed_out: bool, timeout: int, update: str, suggestions: list[str]) -> str:
-    out = raw
-    if timed_out:
-        out = f"[TIMEOUT after {timeout}s — partial output below]\n" + out
-    out += f"\n\n[FINDINGS UPDATE]\n{update}"
-    if suggestions:
-        out += "\n\n[SUGGESTED NEXT STEPS]\n" + "\n".join(suggestions)
-    return out
 
 
 def brute_force(
@@ -41,6 +32,12 @@ def brute_force(
             "Tip: gunzip /usr/share/wordlists/rockyou.txt.gz to extract rockyou.txt"
         )
 
+    if not username and not Path(userlist).exists():
+        return (
+            f"[ERROR] User list not found: {userlist}\n"
+            "Tip: specify a custom userlist path or provide a username= argument"
+        )
+
     args = []
     if username:
         args.extend(["-l", username])
@@ -61,7 +58,7 @@ def brute_force(
     update = findings.update_credentials(creds)
     suggestions = findings.get_suggestions(target)
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout, result.timed_out, exe.timeout, update, suggestions,
     )
 
@@ -97,4 +94,4 @@ def crack_hash(
     update = findings.update_hashes(hashes)
     suggestions = findings.get_suggestions()
 
-    return _fmt(result.stdout, result.timed_out, exe.timeout, update, suggestions)
+    return fmt_output(result.stdout, result.timed_out, exe.timeout, update, suggestions)

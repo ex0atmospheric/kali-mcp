@@ -4,6 +4,7 @@ from parsers import gobuster as gobuster_parser
 from parsers import ffuf as ffuf_parser
 from parsers import nikto as nikto_parser
 from parsers import sqlmap as sqlmap_parser
+from tools._utils import fmt_output
 
 _DEFAULT_WORDLIST = "/usr/share/wordlists/dirb/common.txt"
 
@@ -11,16 +12,6 @@ _DEFAULT_WORDLIST = "/usr/share/wordlists/dirb/common.txt"
 def _extract_host(url: str) -> str:
     from urllib.parse import urlparse
     return urlparse(url).hostname or url
-
-
-def _fmt(raw: str, timed_out: bool, timeout: int, update: str, suggestions: list[str]) -> str:
-    out = raw
-    if timed_out:
-        out = f"[TIMEOUT after {timeout}s — partial output below]\n" + out
-    out += f"\n\n[FINDINGS UPDATE]\n{update}"
-    if suggestions:
-        out += "\n\n[SUGGESTED NEXT STEPS]\n" + "\n".join(suggestions)
-    return out
 
 
 def web_fuzz_dirs(
@@ -61,7 +52,7 @@ def web_fuzz_dirs(
     update = findings.update_urls(host, urls)
     suggestions = findings.get_suggestions(host)
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout, result.timed_out, exe.timeout, update, suggestions,
     )
 
@@ -86,7 +77,7 @@ def web_scan(target: str, port: int = 80) -> str:
     update = findings.update_vulnerabilities(vulns)
     suggestions = findings.get_suggestions(host)
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout, result.timed_out, exe.timeout, update, suggestions,
     )
 
@@ -115,7 +106,7 @@ def sql_inject(url: str, params: str = "", level: int = 2) -> str:
     update = findings.update_vulnerabilities(vulns)
     suggestions = findings.get_suggestions(host)
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout, result.timed_out, exe.timeout, update, suggestions,
     )
 
@@ -141,9 +132,14 @@ def wp_scan(url: str, enumerate: str = "vp,vt,u") -> str:
     if "WordPress" in result.stdout:
         findings.add_note(f"WordPress detected at {url}")
 
+    import re
+    users = re.findall(r"\|\s+Username:\s+(\S+)", result.stdout)
+    if users:
+        findings.add_note(f"WordPress users at {url}: {', '.join(users)}")
+
     suggestions = findings.get_suggestions(host)
     update = "wpscan complete — check output for vulnerabilities."
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout, result.timed_out, exe.timeout, update, suggestions,
     )

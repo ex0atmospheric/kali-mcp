@@ -2,16 +2,7 @@ from context import get_executor, get_findings, ctf_mode_warning
 from scope import ScopeViolation
 from parsers import nmap as nmap_parser
 from parsers import enum4linux as enum4linux_parser
-
-
-def _fmt(raw: str, timed_out: bool, timeout: int, update: str, suggestions: list[str]) -> str:
-    out = raw
-    if timed_out:
-        out = f"[TIMEOUT after {timeout}s — partial output below]\n" + out
-    out += f"\n\n[FINDINGS UPDATE]\n{update}"
-    if suggestions:
-        out += "\n\n[SUGGESTED NEXT STEPS]\n" + "\n".join(suggestions)
-    return out
+from tools._utils import fmt_output
 
 
 def nmap_scan(target: str, ports: str = "1-1000", flags: str = "") -> str:
@@ -43,7 +34,7 @@ def nmap_scan(target: str, ports: str = "1-1000", flags: str = "") -> str:
     suggestions = findings.get_suggestions(target)
     update_str = "\n".join(updates) if updates else "No hosts parsed."
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout + (f"\n[STDERR]\n{result.stderr}" if result.stderr else ""),
         result.timed_out, exe.timeout, update_str, suggestions,
     )
@@ -52,6 +43,7 @@ def nmap_scan(target: str, ports: str = "1-1000", flags: str = "") -> str:
 def dns_enum(target: str) -> str:
     warn = ctf_mode_warning()
     exe = get_executor()
+    findings = get_findings()
 
     try:
         exe.scope.check(target)
@@ -64,11 +56,17 @@ def dns_enum(target: str) -> str:
             result = exe.run("dig", ["+short", target, record_type])
             if result.stdout.strip():
                 output_parts.append(f"=== {record_type} ===\n{result.stdout.strip()}")
+                if record_type == "A":
+                    for line in result.stdout.strip().splitlines():
+                        ip = line.strip()
+                        if ip:
+                            findings.update_host_meta(ip, None, [target])
         except FileNotFoundError as e:
             return str(e)
 
     combined = "\n\n".join(output_parts) or "No DNS records found."
-    return (warn + "\n" if warn else "") + combined + "\n\n[FINDINGS UPDATE]\nDNS enumeration complete."
+    update = "DNS enumeration complete — resolved IPs added to findings." if output_parts else "No records found."
+    return (warn + "\n" if warn else "") + combined + f"\n\n[FINDINGS UPDATE]\n{update}"
 
 
 def smb_enum(target: str) -> str:
@@ -99,7 +97,7 @@ def smb_enum(target: str) -> str:
         f"Shares: {', '.join(s['name'] for s in parsed['shares']) or 'none'}"
     )
 
-    return (warn + "\n" if warn else "") + _fmt(
+    return (warn + "\n" if warn else "") + fmt_output(
         result.stdout + (f"\n[STDERR]\n{result.stderr}" if result.stderr else ""),
         result.timed_out, exe.timeout, update_str, suggestions,
     )
