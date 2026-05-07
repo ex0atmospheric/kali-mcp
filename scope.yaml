@@ -1,0 +1,9 @@
+# Edit before each engagement. Leave empty targets list for CTF mode (no enforcement).
+targets:
+  - 10.10.10.0/24
+  - target.htb
+
+exclude:
+  - 10.10.10.1
+
+notes: "HackTheBox lab"
