@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nmaprun scanner="nmap" version="7.99">
+  <host starttime="1714999999" endtime="1715000010">
+    <address addr="10.10.10.5" addrtype="ipv4"/>
+    <hostnames>
+      <hostname name="target.htb" type="user"/>
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="80">
+        <state state="open" reason="syn-ack"/>
+        <service name="http" product="Apache httpd" version="2.4.49"/>
+      </port>
+      <port protocol="tcp" portid="443">
+        <state state="closed" reason="reset"/>
+        <service name="https"/>
+      </port>
+      <port protocol="tcp" portid="3306">
+        <state state="open" reason="syn-ack"/>
+        <service name="mysql" product="MySQL" version="8.0.27"/>
+      </port>
+    </ports>
+    <os>
+      <osmatch name="Linux 4.x" accuracy="95"/>
+    </os>
+  </host>
+</nmaprun>

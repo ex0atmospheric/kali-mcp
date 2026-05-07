@@ -1,0 +1,15 @@
+ ==============================
+|    Users on 10.10.10.5      |
+ ==============================
+user:[administrator] rid:[0x1f4]
+user:[guest] rid:[0x1f5]
+user:[plague] rid:[0x44f]
+
+ ==============================
+|    Share Enumeration on 10.10.10.5    |
+ ==============================
+Sharename       Type      Comment
+---------       ----      -------
+IPC$            IPC       IPC Service
+ADMIN$          Disk      Remote Admin
+backups         Disk

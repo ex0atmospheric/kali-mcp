@@ -1,0 +1,5 @@
+Using default input encoding: UTF-8
+Loaded 2 password hashes with 2 different salts
+password123      (admin)
+toor             (root)
+Session completed.

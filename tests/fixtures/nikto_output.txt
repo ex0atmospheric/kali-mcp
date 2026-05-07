@@ -1,0 +1,11 @@
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.10.10.5
++ Target Hostname:    target.htb
++ Target Port:        80
+---------------------------------------------------------------------------
++ Server: Apache/2.4.49 (Unix)
++ /: The anti-clickjacking X-Frame-Options header is not present.
++ OSVDB-3092: /admin/: This might be interesting...
++ CVE-2021-41773: Apache 2.4.49 - Path Traversal and Remote Code Execution
++ 7915 requests: 0 error(s) and 3 item(s) reported on remote host

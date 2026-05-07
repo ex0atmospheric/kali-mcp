@@ -1,0 +1,7 @@
+{
+  "results": [
+    {"url": "http://10.10.10.5/admin/", "status": 200, "input": {"FUZZ": "admin"}},
+    {"url": "http://10.10.10.5/images/", "status": 301, "input": {"FUZZ": "images"}},
+    {"url": "http://10.10.10.5/api/", "status": 200, "input": {"FUZZ": "api"}}
+  ]
+}

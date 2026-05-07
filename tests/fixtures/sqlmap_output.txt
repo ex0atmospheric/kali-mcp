@@ -1,0 +1,11 @@
+[INFO] testing connection to the target URL
+[INFO] Parameter 'id' appears to be 'AND boolean-based blind - WHERE or HAVING clause' injectable
+[INFO] the back-end DBMS is MySQL
+[INFO] fetching tables for database: 'webapp'
+Database: webapp
+[3 tables]
++---------+
+| users   |
+| posts   |
+| configs |
++---------+

