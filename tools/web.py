@@ -6,7 +6,12 @@ from parsers import nikto as nikto_parser
 from parsers import sqlmap as sqlmap_parser
 from tools._utils import fmt_output
 
-_DEFAULT_WORDLIST = "/usr/share/wordlists/dirb/common.txt"
+_SECLISTS = f"{__import__('os').path.expanduser('~')}/.local/share/wordlists"
+_DEFAULT_WORDLIST = (
+    "/usr/share/wordlists/dirb/common.txt"
+    if __import__("os.path", fromlist=["exists"]).exists("/usr/share/wordlists/dirb/common.txt")
+    else f"{_SECLISTS}/Discovery/Web-Content/common.txt"
+)
 
 
 def _extract_host(url: str) -> str:

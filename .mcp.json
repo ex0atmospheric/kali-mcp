@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "kali-mcp": {
-      "command": "python3",
-      "args": ["/home/plague/kali-mcp/server.py"],
-      "cwd": "/home/plague/kali-mcp"
+      "command": "/Users/ex0atmospheric/Projects/Claude/kali-mcp/dist/kali-mcp",
+      "args": [],
+      "cwd": "/Users/ex0atmospheric/Projects/Claude/kali-mcp"
     }
   }
 }

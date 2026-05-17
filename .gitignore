@@ -1,0 +1,21 @@
+# PyInstaller build artifacts
+dist/
+build/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Runtime state
+findings.json
+
+# Autoconf / C build system artifacts
+config.h
+config.log
+config.status
+stamp-h1
+
+# Sensitive / environment-specific files
+password.txt

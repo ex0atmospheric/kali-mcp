@@ -41,12 +41,12 @@ def smb_enum(target: str) -> str:
 @mcp.tool()
 def web_fuzz_dirs(
     target_url: str,
-    wordlist: str = "/usr/share/wordlists/dirb/common.txt",
+    wordlist: str = "",
     extensions: str = "",
     tool: str = "gobuster",
 ) -> str:
     """Fuzz web directories/files. tool='gobuster' or 'ffuf'. extensions e.g. 'php,html'."""
-    return _web_fuzz_dirs(target_url, wordlist, extensions, tool)
+    return _web_fuzz_dirs(target_url, wordlist or "", extensions, tool)
 
 
 @mcp.tool()

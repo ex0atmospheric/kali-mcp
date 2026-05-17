@@ -5,8 +5,17 @@ from parsers import hydra as hydra_parser
 from parsers import john as john_parser
 from tools._utils import fmt_output
 
-_DEFAULT_PASSLIST = "/usr/share/wordlists/rockyou.txt"
-_DEFAULT_USERLIST = "/usr/share/wordlists/metasploit/unix_users.txt"
+_SECLISTS = f"{__import__('os').path.expanduser('~')}/.local/share/wordlists"
+_DEFAULT_PASSLIST = (
+    "/usr/share/wordlists/rockyou.txt"
+    if __import__("os.path", fromlist=["exists"]).exists("/usr/share/wordlists/rockyou.txt")
+    else f"{_SECLISTS}/Passwords/Leaked-Databases/rockyou.txt"
+)
+_DEFAULT_USERLIST = (
+    "/usr/share/wordlists/metasploit/unix_users.txt"
+    if __import__("os.path", fromlist=["exists"]).exists("/usr/share/wordlists/metasploit/unix_users.txt")
+    else f"{_SECLISTS}/Usernames/top-usernames-shortlist.txt"
+)
 
 
 def brute_force(
